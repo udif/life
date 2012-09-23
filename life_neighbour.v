@@ -26,7 +26,6 @@ module life_neighbour #
 	parameter LOG2Y=3
 ) (
 	input [(X*Y)-1:0]data,
-	input wrap,
 	input [(LOG2X+LOG2Y-1):0]cnt,
 	output c, l, r, u, d, lu, ld, ru, rd
  );
@@ -42,13 +41,13 @@ wire [LOG2Y-1:0]y;
 assign c  = data[63];
 assign x  = cnt[(LOG2X-1):0];
 assign y  = cnt[(LOG2Y-1+LOG2X):LOG2X];
-assign r  = (!wrap && (x == (X-1))) ? 1'b0 : data[0];
-assign l  = (!wrap && (x == 3'd0))  ? 1'b0 : data[62];
-assign d  = (!wrap && (y == (Y-1))) ? 1'b0 : data[7];
-assign u  = (!wrap && (y == 3'd0))  ? 1'b0 : data[55];
-assign rd = (!wrap && ((x == (X-1)) || (y == (Y-1)))) ? 1'b0 : data[8];
-assign ld = (!wrap && ((x == 3'd0)  || (y == (Y-1)))) ? 1'b0 : data[6];
-assign ru = (!wrap && ((x == (X-1)) || (y == 3'd0)))  ? 1'b0 : data[56];
-assign lu = (!wrap && ((x == 3'd0)  || (y == 3'd0)))  ? 1'b0 : data[54];
+assign r  = (x == (X-1)) ? 1'b0 : data[0];
+assign l  = (x == 3'd0)  ? 1'b0 : data[62];
+assign d  = (y == (Y-1)) ? 1'b0 : data[7];
+assign u  = (y == 3'd0)  ? 1'b0 : data[55];
+assign rd = ((x == (X-1)) || (y == (Y-1))) ? 1'b0 : data[8];
+assign ld = ((x == 3'd0)  || (y == (Y-1))) ? 1'b0 : data[6];
+assign ru = ((x == (X-1)) || (y == 3'd0))  ? 1'b0 : data[56];
+assign lu = ((x == 3'd0)  || (y == 3'd0))  ? 1'b0 : data[54];
 
 endmodule
