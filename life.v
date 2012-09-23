@@ -20,8 +20,8 @@
 //////////////////////////////////////////////////////////////////////////////////
 module life #
 (
-	parameter X=3'd8,
-	parameter Y=3'd8,
+	parameter X=8,
+	parameter Y=8,
 	parameter LOG2X=3,
 	parameter LOG2Y=3
 ) (
