@@ -27,7 +27,7 @@ module life_sum #
 ) (
 	output new_data,
 	input c, l, r, u, d, lu, ld, ru, rd
- );
+);
 
 wire [1:0]sum1, sum2, sum3;
 wire [2:0]total;
