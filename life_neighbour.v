@@ -38,16 +38,16 @@ wire [LOG2Y-1:0]y;
 // [l]  [c] [r]
 // [ld] [d] [rd]
 
-assign c  = data[63];
+assign c  = data[(X*Y-1)];
 assign x  = cnt[(LOG2X-1):0];
 assign y  = cnt[(LOG2Y-1+LOG2X):LOG2X];
 assign r  = (x == (X-1)) ? 1'b0 : data[0];
-assign l  = (x == 3'd0)  ? 1'b0 : data[62];
-assign d  = (y == (Y-1)) ? 1'b0 : data[7];
-assign u  = (y == 3'd0)  ? 1'b0 : data[55];
-assign rd = ((x == (X-1)) || (y == (Y-1))) ? 1'b0 : data[8];
-assign ld = ((x == 3'd0)  || (y == (Y-1))) ? 1'b0 : data[6];
-assign ru = ((x == (X-1)) || (y == 3'd0))  ? 1'b0 : data[56];
-assign lu = ((x == 3'd0)  || (y == 3'd0))  ? 1'b0 : data[54];
+assign l  = (x == 3'd0)  ? 1'b0 : data[(X*Y-2)];
+assign d  = (y == (Y-1)) ? 1'b0 : data[(X-1)];
+assign u  = (y == 3'd0)  ? 1'b0 : data[(X*(Y-1)-1)];
+assign rd = ((x == (X-1)) || (y == (Y-1))) ? 1'b0 : data[X];
+assign ld = ((x == 3'd0)  || (y == (Y-1))) ? 1'b0 : data[X-2];
+assign ru = ((x == (X-1)) || (y == 3'd0))  ? 1'b0 : data[X*(Y-1)];
+assign lu = ((x == 3'd0)  || (y == 3'd0))  ? 1'b0 : data[X*(Y-1)-2];
 
 endmodule

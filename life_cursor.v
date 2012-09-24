@@ -5,7 +5,7 @@
 // 
 // Create Date:    21:14:54 09/09/2012 
 // Design Name: 
-// Module Name:    life_cnt
+// Module Name:    life_data
 // Project Name: 
 // Target Devices: 
 // Tool versions: 
@@ -18,7 +18,7 @@
 // Additional Comments: 
 //
 //////////////////////////////////////////////////////////////////////////////////
-module life_cnt #
+module life_cursor #
 (
 	parameter X=3'd8,
 	parameter Y=3'd8,
@@ -26,27 +26,30 @@ module life_cnt #
 	parameter LOG2Y=3
 ) (
 	input clk,
-	input key_nxt,
-	output nxt_bit,
-	output reg [(LOG2X+LOG2Y-1):0]cnt
+	input key_down, key_up, key_left, key_right,
+	output reg [LOG2Y-1:0]cursor_y,
+	output reg [LOG2X-1:0]cursor_x
 );
 
-reg key_nxt_d;
-reg nxt;
-
-assign nxt_bit = (cnt != {(LOG2X+LOG2Y){1'b1}}) || nxt;
+reg key_down_d, key_up_d, key_left_d, key_right_d;
 
 always @(posedge clk)
 begin
-	key_nxt_d <= key_nxt;
-	if (cnt == {(LOG2X+LOG2Y){1'b1}})
-		nxt <= 1'b0;
-	// key is being released
-	else if (!key_nxt && key_nxt_d)
-		nxt <= 1'b1;
+	key_down_d  <= key_down;
+	key_up_d    <= key_up;
+	key_left_d  <= key_right;
+	key_right_d <= key_right;
+	
+	if (key_down_d && !key_down)
+		cursor_y <= cursor_y + 1;
+	else if (key_up_d && !key_up)
+		cursor_y <= cursor_y - 1;
 		
-	if (nxt_bit)
-		cnt <= cnt + 1;
+	if (key_left_d && !key_left)
+		cursor_x <= cursor_x + 1;
+	else if (key_right_d && !key_right)
+		cursor_x <= cursor_x - 1;
+
 end
 
 endmodule

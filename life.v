@@ -26,21 +26,49 @@ module life #
 	parameter LOG2Y=3
 ) (
 	input clk,
-	output [(X*Y-1):0]data
+	input key_nxt,
+	input key_flip, key_down, key_up, key_left, key_right,
+	output [X-1:0]row,
+	output [Y-1:0]col
  );
 
 wire new_data;
 wire pipe_out;
 wire c, l, r, u, d, lu, ld, ru, rd;
+wire [(LOG2X+LOG2Y-1):0]cnt;
+wire [(X*Y-1):0]data;
+wire nxt_bit;
+wire [LOG2X-1:0]cursor_x;
+wire [LOG2Y-1:0]cursor_y;
 
 life_data  #(
   .X(X),
   .Y(Y),
   .LOG2X(LOG2X),
   .LOG2Y(LOG2Y)
-) l_d (
+) l_data (
 	.clk(clk),
+	.pipe_out(pipe_out),
+	.nxt_bit(nxt_bit),
+	.key_flip(key_flip),
+	.cursor_x(cursor_x),
+	.cursor_y(cursor_y),
 	.data(data)
+);
+
+life_cursor  #(
+  .X(X),
+  .Y(Y),
+  .LOG2X(LOG2X),
+  .LOG2Y(LOG2Y)
+) l_cursor (
+	.clk(clk),
+	.key_down(key_down),
+	.key_up(key_up),
+	.key_left(key_left),
+	.key_right(key_right),
+	.cursor_x(cursor_x),
+	.cursor_y(cursor_y)
 );
 
 life_cnt  #(
@@ -48,9 +76,24 @@ life_cnt  #(
   .Y(Y),
   .LOG2X(LOG2X),
   .LOG2Y(LOG2Y)
-) l_c (
+) l_cnt (
 	.clk(clk),
+	.key_nxt(key_nxt),
+	.nxt_bit(nxt_bit),
 	.cnt(cnt)
+);
+
+life_display  #(
+  .X(X),
+  .Y(Y),
+  .LOG2X(LOG2X),
+  .LOG2Y(LOG2Y)
+) l_disp (
+	.clk(clk),
+	.cnt(cnt),
+	.top_row(data[X-1:0]),
+	.row(row),
+	.col(col)
 );
 
 life_neighbour  #(
@@ -70,7 +113,7 @@ life_sum  #(
   .Y(Y),
   .LOG2X(LOG2X),
   .LOG2Y(LOG2Y)
-) l_s (
+) l_sum (
 	.new_data(new_data),
 	.c(c), .l(l), .r(r), .u(u), .d(d),
 	.lu(lu), .ld(ld), .ru(ru), .rd(rd)
@@ -81,7 +124,7 @@ life_pipe  #(
   .Y(Y),
   .LOG2X(LOG2X),
   .LOG2Y(LOG2Y)
-) l_p (
+) l_pipe (
 	.clk(clk),
 	.new_data(new_data),
 	.pipe_out(pipe_out)
