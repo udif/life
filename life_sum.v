@@ -29,15 +29,13 @@ module life_sum #
 	input c, l, r, u, d, lu, ld, ru, rd
 );
 
-wire [1:0]sum1, sum2, sum3;
-wire [2:0]total;
+wire [2:0]sum1;
 
-assign sum1 = {1'b0, lu} + {1'b0, u} + {1'b0, ru};
-assign sum2 = {1'b0, l}  +             {1'b0, r};
-assign sum3 = {1'b0, ld} + {1'b0, d} + {1'b0, rd};
-// Notice we throw the 4th bit even though the sum can be 8 or 9
-assign total = {1'b0, sum1} + {1'b0, sum2} + {1'b0, sum3};
+assign sum1 = {2'b0, lu} + {2'b0, u} + {2'b0, ru} + {2'b0, ld} + {2'b0, d} + {2'b0, rd} + {2'b0, l};
 // Notice that 2 or 3 must really be 2 or 3 and not 10 or 11 because we can't get those by summing 9 1's.
-assign new_data = (total == 3'd3) | (total == 3'd2) & c;
+assign new_data = (sum1[2:1] == 2'd0) & c & r |
+                  (sum1 == 3'd2) & ~c & r |
+						(sum1 == 3'd2) & c & ~r |
+						(sum1[2:1] == 2'd1) & ~c & ~r;
 
 endmodule
