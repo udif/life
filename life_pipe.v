@@ -26,15 +26,19 @@ module life_pipe #
 	parameter LOG2Y=3
 ) (
 	input clk,
+	input reset,
 	input new_data,
 	output pipe_out
 );
 
 reg [X:0]pipe;
 
-always @(posedge clk)
+always @(posedge clk, negedge reset)
 begin
-	pipe <= {pipe[X-1:0], new_data};
+	if (~reset)
+		pipe <= {(X+1){1'b0}};
+	else
+		pipe <= {pipe[X-1:0], new_data};
 end
 
 assign pipe_out = pipe[X];

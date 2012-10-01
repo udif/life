@@ -26,6 +26,7 @@ module life_data #
 	parameter LOG2Y=3
 ) (
 	input clk,
+	input reset,
 	input nxt_bit,
 	input key_flip,
 	input [LOG2X-1:0]cursor_x,
@@ -58,7 +59,14 @@ end
 always @(posedge clk)
 begin
 	key_flip_d  <= key_flip;
-	data <= data_next;
+end
+
+always @(posedge clk, negedge reset)
+begin
+	if (~reset)
+		data <= {(X*Y){1'b0}};
+	else
+		data <= data_next;
 end
 
 endmodule

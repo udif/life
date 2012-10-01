@@ -26,6 +26,7 @@ module life #
 	parameter LOG2Y=3
 ) (
 	input clk,
+	input reset,
 	input key_nxt,
 	input key_flip, key_down, key_up, key_left, key_right,
 	output [X-1:0]row,
@@ -48,6 +49,7 @@ life_data  #(
   .LOG2Y(LOG2Y)
 ) l_data (
 	.clk(clk),
+	.reset(reset),
 	.pipe_out(pipe_out),
 	.nxt_bit(nxt_bit),
 	.key_flip(key_flip),
@@ -63,6 +65,7 @@ life_cursor  #(
   .LOG2Y(LOG2Y)
 ) l_cursor (
 	.clk(clk),
+	.reset(reset),
 	.key_down(key_down),
 	.key_up(key_up),
 	.key_left(key_left),
@@ -78,6 +81,7 @@ life_cnt  #(
   .LOG2Y(LOG2Y)
 ) l_cnt (
 	.clk(clk),
+	.reset(reset),
 	.key_nxt(key_nxt),
 	.nxt_bit(nxt_bit),
 	.cnt(cnt)
@@ -90,6 +94,7 @@ life_display  #(
   .LOG2Y(LOG2Y)
 ) l_disp (
 	.clk(clk),
+	.reset(reset),
 	.cnt(cnt),
 	.top_row(data[X-1:0]),
 	.row(row),
@@ -126,6 +131,7 @@ life_pipe  #(
   .LOG2Y(LOG2Y)
 ) l_pipe (
 	.clk(clk),
+	.reset(reset),
 	.new_data(new_data),
 	.pipe_out(pipe_out)
 );

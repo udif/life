@@ -26,6 +26,7 @@ module life_cnt #
 	parameter LOG2Y=3
 ) (
 	input clk,
+	input reset,
 	input key_nxt,
 	output reg nxt_bit,
 	output reg [(LOG2X+LOG2Y-1):0]cnt
@@ -40,15 +41,28 @@ assign last_cnt = (cnt == {{(LOG2X+LOG2Y-1){1'b1}}, 1'b0});
 always @(posedge clk)
 begin
 	key_nxt_d <= key_nxt;
-	nxt_bit <= !last_cnt || nxt;
-	if (last_cnt)
+end
+
+always @(posedge clk, negedge reset)
+begin
+	if (~reset)
+	begin
+		nxt_bit <= 1'b0;
 		nxt <= 1'b0;
-	// key is being released
-	else if (!key_nxt && key_nxt_d)
-		nxt <= 1'b1;
-		
-	if (nxt_bit)
-		cnt <= cnt + 1;
+		cnt <= {(LOG2X+LOG2Y){1'b0}};
+	end
+	else
+	begin
+		nxt_bit <= !last_cnt || nxt;
+		if (last_cnt)
+			nxt <= 1'b0;
+		// key is being released
+		else if (!key_nxt && key_nxt_d)
+			nxt <= 1'b1;
+
+		if (nxt_bit)
+			cnt <= cnt + 1;
+	end
 end
 
 endmodule
