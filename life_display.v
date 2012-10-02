@@ -42,7 +42,7 @@ begin
 	end
 	else
 	begin
-		if (cnt[LOG2X-1:0] == {LOG2X{1'b1}})
+		if (cnt[LOG2X-1:0] == {LOG2X{1'b0}})
 		begin
 			col <= top_row;
 		end
