@@ -28,11 +28,14 @@ module life_cnt #
 	input clk,
 	input reset,
 	input key_nxt,
+	input key_run,
+	input key_down, key_up, key_left, key_right,
 	output reg nxt_bit,
 	output reg [(LOG2X+LOG2Y-1):0]cnt
 );
 
 reg key_nxt_d;
+reg key_down_d, key_up_d, key_left_d, key_right_d;
 reg nxt;
 wire last_cnt;
 
@@ -41,6 +44,10 @@ assign last_cnt = (cnt == {{(LOG2X+LOG2Y-1){1'b1}}, 1'b0});
 always @(posedge clk)
 begin
 	key_nxt_d <= key_nxt;
+	key_down_d  <= key_down;
+	key_up_d    <= key_up;
+	key_left_d  <= key_right;
+	key_right_d <= key_right;
 end
 
 always @(posedge clk, negedge reset)
@@ -60,8 +67,22 @@ begin
 		else if (!key_nxt && key_nxt_d)
 			nxt <= 1'b1;
 
-		if (nxt_bit)
-			cnt <= cnt + 1;
+		if (key_run)
+		begin
+			if (nxt_bit)
+				cnt <= cnt + 1;
+		end
+		else
+		begin
+			if (key_down_d && !key_down)
+				cnt[(LOG2X+LOG2Y-1):LOG2X] <= cnt[(LOG2X+LOG2Y-1):LOG2X] + 1;
+			else if (key_up_d && !key_up)
+				cnt[(LOG2X+LOG2Y-1):LOG2X] <= cnt[(LOG2X+LOG2Y-1):LOG2X] - 1;
+			if (key_left_d && !key_left)
+				cnt[(LOG2X-1):0] <= cnt[(LOG2X-1):0] + 1;
+			else if (key_right_d && !key_right)
+				cnt[(LOG2X-1):0] <= cnt[(LOG2X-1):0] - 1;
+		end
 	end
 end
 

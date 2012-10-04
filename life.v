@@ -28,6 +28,7 @@ module life #
 	input clk,
 	input reset,
 	input key_nxt,
+	input key_run,
 	input key_flip, key_down, key_up, key_left, key_right,
 	output [X-1:0]row,
 	output [Y-1:0]col
@@ -39,8 +40,6 @@ wire c, l, r, u, d, lu, ld, ru, rd;
 wire [(LOG2X+LOG2Y-1):0]cnt;
 wire [(X*Y-1):0]data;
 wire nxt_bit;
-wire [LOG2X-1:0]cursor_x;
-wire [LOG2Y-1:0]cursor_y;
 
 life_data  #(
   .X(X),
@@ -53,25 +52,9 @@ life_data  #(
 	.pipe_out(pipe_out),
 	.nxt_bit(nxt_bit),
 	.key_flip(key_flip),
-	.cursor_x(cursor_x),
-	.cursor_y(cursor_y),
+	.key_run(key_run),
+	.cnt(cnt),
 	.data(data)
-);
-
-life_cursor  #(
-  .X(X),
-  .Y(Y),
-  .LOG2X(LOG2X),
-  .LOG2Y(LOG2Y)
-) l_cursor (
-	.clk(clk),
-	.reset(reset),
-	.key_down(key_down),
-	.key_up(key_up),
-	.key_left(key_left),
-	.key_right(key_right),
-	.cursor_x(cursor_x),
-	.cursor_y(cursor_y)
 );
 
 life_cnt  #(
@@ -82,7 +65,12 @@ life_cnt  #(
 ) l_cnt (
 	.clk(clk),
 	.reset(reset),
+	.key_down(key_down),
+	.key_up(key_up),
+	.key_left(key_left),
+	.key_right(key_right),
 	.key_nxt(key_nxt),
+	.key_run(key_run),
 	.nxt_bit(nxt_bit),
 	.cnt(cnt)
 );

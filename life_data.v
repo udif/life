@@ -29,8 +29,8 @@ module life_data #
 	input reset,
 	input nxt_bit,
 	input key_flip,
-	input [LOG2X-1:0]cursor_x,
-	input [LOG2Y-1:0]cursor_y,
+	input key_run,
+	input [(LOG2X+LOG2Y-1):0]cnt,
 	input pipe_out,
 	output reg [(X*Y-1):0]data
 );
@@ -53,7 +53,7 @@ begin
 		data_next[(Y-1)*X-3] = pipe_out;
 	end
 	else if (key_flip_d && !key_flip)
-		data_next[{cursor_y, cursor_x}] = !data_next[{cursor_y, cursor_x}];
+		data_next[cnt] = !data_next[cnt];
 end
 
 always @(posedge clk)
