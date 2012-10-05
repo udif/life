@@ -20,10 +20,10 @@
 //////////////////////////////////////////////////////////////////////////////////
 module top;
 
-parameter X=8;
-parameter Y=8;
-parameter LOG2X=3;
-parameter LOG2Y=3;
+parameter X=16;
+parameter Y=16;
+parameter LOG2X=4;
+parameter LOG2Y=4;
 
 
 
@@ -58,18 +58,19 @@ begin
 	clk <= 1'b0;
 	reset <= 1'b0;
 	#15 reset <= 1'b1;
-	repeat (1000)
-		#10 clk <= ~clk;
 end
+
+always
+	#10 clk <= ~clk;
 
 initial
 begin
 	#20
-	top.l.l_data.data[4*X+4] = 1'b1;
-	top.l.l_data.data[4*X+5] = 1'b1;
-	top.l.l_data.data[4*X+6] = 1'b1;
-	top.l.l_data.data[5*X+6] = 1'b1;
-	top.l.l_data.data[6*X+5] = 1'b1;
+	top.l.l_data.data[8*X+7] = 1'b1;
+	top.l.l_data.data[8*X+8] = 1'b1;
+	top.l.l_data.data[8*X+9] = 1'b1;
+	top.l.l_data.data[7*X+8] = 1'b1;
+	top.l.l_data.data[9*X+8] = 1'b1;
 end
 
 always @(posedge clk)
@@ -101,14 +102,29 @@ begin
 	key_down = 1'b0;
 	key_up = 1'b0;
 	key_flip = 1'b0;
-	key_nxt = 1'b1;
+	key_nxt = 1'b0;
 	repeat(X*Y)
 		@(posedge clk);
-	for (g = 0; g < 3; g = g + 1)
+	for (g = 0; g < 15; g = g + 1)
 	begin
 		$display ("Gen %d", g);
 		display_data();
-		repeat(X*Y)
+	repeat(X*Y)
+		@(posedge clk);
+	end
+	$finish;
+end
+
+initial
+begin
+	repeat (5)
+		@(posedge clk);
+	repeat (10)
+	begin
+		key_nxt <= 1'b0;
+		@(posedge clk);
+		key_nxt <= 1'b1;
+		repeat (X*Y-1)
 			@(posedge clk);
 	end
 end
