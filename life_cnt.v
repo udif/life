@@ -53,15 +53,15 @@ begin
 	end
 	else
 	begin
-		nxt_bit <= !last_cnt || nxt;
 		if (last_cnt)
-			nxt <= 1'b0;
+			nxt_bit <= nxt;
 		// key is being released
-		else if (!key_nxt && key_nxt_d)
+		if (!key_nxt && key_nxt_d)
 			nxt <= 1'b1;
+		else if (last_cnt)
+			nxt <= 1'b0;
 
-		if (nxt_bit)
-			cnt <= cnt + 1;
+		cnt <= cnt + 1;
 	end
 end
 

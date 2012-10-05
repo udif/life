@@ -44,11 +44,10 @@ begin
    // data = (data >> 1) | ((data & 1) << (X*Y-1));
    // data = data & ~(1LL << ((Y-1)*X-3)) | (pipe_out  ? (1LL << ((Y-1)*X-3)) : 0);
 
-	data_next = data; // default
+	// First rotate left
+	data_next = {data[0], data[(X*Y-1):1]};
 	if (nxt_bit) // game is running
 	begin
-		// First rotate left
-		data_next = {data[0], data[(X*Y-1):1]};
 		// update
 		data_next[(Y-1)*X-3] = pipe_out;
 	end
