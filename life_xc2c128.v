@@ -33,6 +33,8 @@ module life #
 	output [Y-1:0]col
  );
 
+localparam HIGH_BITS=16;
+
 wire new_data;
 wire pipe_out;
 wire c, l, r, u, d, lu, ld, ru, rd;
@@ -42,20 +44,40 @@ wire nxt_bit;
 wire [LOG2X-1:0]cursor_x;
 wire [LOG2Y-1:0]cursor_y;
 
-life_data  #(
+life_data_low  #(
   .X(X),
   .Y(Y),
+  .HIGH_BITS(HIGH_BITS),
   .LOG2X(LOG2X),
   .LOG2Y(LOG2Y)
-) l_data (
+) l_data_l (
 	.clk(clk),
 	.reset(reset),
-	.pipe_out(pipe_out),
-	.nxt_bit(nxt_bit),
 	.key_flip(key_flip),
+	.key_flip_d(key_flip_d),
 	.cursor_x(cursor_x),
 	.cursor_y(cursor_y),
-	.data(data)
+	.data_low(data[(X*Y-HIGH_BITS-1):0]),
+	.data_high(data[(X*Y-1):(X*Y-HIGH_BITS)])
+);
+
+life_data_high  #(
+  .X(X),
+  .Y(Y),
+  .HIGH_BITS(HIGH_BITS),
+  .LOG2X(LOG2X),
+  .LOG2Y(LOG2Y)
+) l_data_h (
+	.clk(clk),
+	.reset(reset),
+	.nxt_bit(nxt_bit),
+	.key_flip(key_flip),
+	.key_flip_d(key_flip_d),
+	.pipe_out(pipe_out),
+	.cursor_x(cursor_x),
+	.cursor_y(cursor_y),
+	.data_low(data[(X*Y-HIGH_BITS-1):0]),
+	.data_high(data[(X*Y-1):(X*Y-HIGH_BITS)])
 );
 
 life_cursor  #(
