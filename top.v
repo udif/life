@@ -38,6 +38,7 @@ reg [(X*Y-1):0]disp_array;
 life  #(
   .X(X),
   .Y(Y),
+  .HIGH_BITS(32),
   .LOG2X(LOG2X),
   .LOG2Y(LOG2Y)
 ) l (
@@ -66,11 +67,11 @@ always
 initial
 begin
 	#20
-	top.l.l_data.data[8*X+7] = 1'b1;
-	top.l.l_data.data[8*X+8] = 1'b1;
-	top.l.l_data.data[8*X+9] = 1'b1;
-	top.l.l_data.data[7*X+8] = 1'b1;
-	top.l.l_data.data[9*X+8] = 1'b1;
+	top.l.l_data_l.data_low[8*X+7] = 1'b1;
+	top.l.l_data_l.data_low[8*X+8] = 1'b1;
+	top.l.l_data_l.data_low[8*X+9] = 1'b1;
+	top.l.l_data_l.data_low[7*X+8] = 1'b1;
+	top.l.l_data_l.data_low[9*X+8] = 1'b1;
 end
 
 always @(posedge clk)

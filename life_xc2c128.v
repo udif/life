@@ -22,6 +22,7 @@ module life #
 (
 	parameter X=8,
 	parameter Y=8,
+	parameter HIGH_BITS=(X+3), // minimum value
 	parameter LOG2X=3,
 	parameter LOG2Y=3
 ) (
@@ -32,8 +33,6 @@ module life #
 	output [X-1:0]row,
 	output [Y-1:0]col
  );
-
-localparam HIGH_BITS=16;
 
 wire new_data;
 wire pipe_out;
