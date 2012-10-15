@@ -57,7 +57,7 @@ life_data_low  #(
 	.cursor_x(cursor_x),
 	.cursor_y(cursor_y),
 	.data_low(data[(X*Y-HIGH_BITS-1):0]),
-	.data_high(data[(X*Y-1):(X*Y-HIGH_BITS)])
+	.data_high_lsb(data[(X*Y-HIGH_BITS)])
 );
 
 life_data_high  #(
@@ -75,7 +75,7 @@ life_data_high  #(
 	.pipe_out(pipe_out),
 	.cursor_x(cursor_x),
 	.cursor_y(cursor_y),
-	.data_low(data[(X*Y-HIGH_BITS-1):0]),
+	.data_low_lsb(data[0]),
 	.data_high(data[(X*Y-1):(X*Y-HIGH_BITS)])
 );
 
@@ -108,17 +108,28 @@ life_cnt  #(
 	.cnt(cnt)
 );
 
-life_display  #(
+life_row  #(
   .X(X),
   .Y(Y),
   .LOG2X(LOG2X),
   .LOG2Y(LOG2Y)
-) l_disp (
+) l_row (
+	.clk(clk),
+	.reset(reset),
+	.cnt(cnt),
+	.row(row)
+);
+
+life_col  #(
+  .X(X),
+  .Y(Y),
+  .LOG2X(LOG2X),
+  .LOG2Y(LOG2Y)
+) l_col (
 	.clk(clk),
 	.reset(reset),
 	.cnt(cnt),
 	.top_row(data[X-1:0]),
-	.row(row),
 	.col(col)
 );
 
