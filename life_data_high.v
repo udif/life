@@ -34,7 +34,7 @@ module life_data_high #
 	input [LOG2X-1:0]cursor_x,
 	input [LOG2Y-1:0]cursor_y,
 	input pipe_out,
-	input [(X*Y-HIGH_BITS-1):0]data_low,
+	input data_low_lsb,
 	output reg [(X*Y-1):(X*Y-HIGH_BITS)]data_high
 );
 
@@ -47,7 +47,7 @@ begin
    // data = data & ~(1LL << ((Y-1)*X-3)) | (pipe_out  ? (1LL << ((Y-1)*X-3)) : 0);
 
 	// First rotate left
-	data_high_next = {data_low[0], data_high[(X*Y-1):(X*Y-HIGH_BITS+1)]};
+	data_high_next = {data_low_lsb, data_high[(X*Y-1):(X*Y-HIGH_BITS+1)]};
 	if (nxt_bit) // game is running
 	begin
 		// update

@@ -28,7 +28,7 @@ module life_data_low #
 ) (
 	input clk,
 	input reset,
-	input [X*Y-1:(X*Y-HIGH_BITS)]data_high,
+	input data_high_lsb,
 	input key_flip,
 	input key_flip_d,
 	input [LOG2X-1:0]cursor_x,
@@ -45,7 +45,7 @@ begin
    // data = data & ~(1LL << ((Y-1)*X-3)) | (pipe_out  ? (1LL << ((Y-1)*X-3)) : 0);
 
 	// First rotate left
-	data_low_next = {data_high[X*Y-HIGH_BITS], data_low[(X*Y-HIGH_BITS-1):1]};
+	data_low_next = {data_high_lsb, data_low[(X*Y-HIGH_BITS-1):1]};
 	if (key_flip_d && !key_flip)
 		data_low_next[{cursor_y, cursor_x}] = !data_low_next[{cursor_y, cursor_x}];
 end
