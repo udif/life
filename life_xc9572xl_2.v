@@ -35,14 +35,14 @@ module life_2 #
 	input [2:0]data_low_X_XM2,
 	input [(LOG2X+LOG2Y-1):0]cnt,
 	output [X-1:0]row,
+	output [LOG2X-1:0]cursor_x,
+	output [LOG2Y-1:0]cursor_y,
 	output data_high_lsb
  );
 
 wire new_data;
 wire pipe_out;
 wire c, l, r, u, d, lu, ld, ru, rd;
-wire [LOG2X-1:0]cursor_x;
-wire [LOG2Y-1:0]cursor_y;
 wire [(X*Y-1):(X*Y-HIGH_BITS)]data_high;
 reg [(X*Y-1):0]data;
 
