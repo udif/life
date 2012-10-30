@@ -18,6 +18,9 @@
 // Additional Comments: 
 //
 //////////////////////////////////////////////////////////////////////////////////
+
+`include "key_codes.vh"
+
 module life_2 #
 (
 	parameter X=8,
@@ -29,8 +32,7 @@ module life_2 #
 	input clk,
 	input reset,
 	input nxt_bit,
-	output key_flip_d,
-	input key_flip, key_down, key_up, key_left, key_right,
+	input [2:0]keys,
 	input data_low_lsb,
 	input [2:0]data_low_X_XM2,
 	input [(LOG2X+LOG2Y-1):0]cnt,
@@ -58,8 +60,7 @@ life_data_high  #(
 	.clk(clk),
 	.reset(reset),
 	.nxt_bit(nxt_bit),
-	.key_flip(key_flip),
-	.key_flip_d(key_flip_d),
+	.keys(keys),
 	.pipe_out(pipe_out),
 	.cursor_x(cursor_x),
 	.cursor_y(cursor_y),
@@ -75,10 +76,7 @@ life_cursor  #(
 ) l_cursor (
 	.clk(clk),
 	.reset(reset),
-	.key_down(key_down),
-	.key_up(key_up),
-	.key_left(key_left),
-	.key_right(key_right),
+	.keys(keys),
 	.cursor_x(cursor_x),
 	.cursor_y(cursor_y)
 );

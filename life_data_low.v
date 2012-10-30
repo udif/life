@@ -18,6 +18,9 @@
 // Additional Comments: 
 //
 //////////////////////////////////////////////////////////////////////////////////
+
+`include "key_codes.vh"
+
 module life_data_low #
 (
 	parameter X=8,
@@ -29,14 +32,16 @@ module life_data_low #
 	input clk,
 	input reset,
 	input data_high_lsb,
-	input key_flip,
-	input key_flip_d,
+	input [2:0]keys,
 	input [LOG2X-1:0]cursor_x,
 	input [LOG2Y-1:0]cursor_y,
 	output reg [(X*Y-HIGH_BITS-1):0]data_low
 );
 
 reg [(X*Y-HIGH_BITS-1):0]data_low_next;
+wire key_flip;
+
+assign key_flip = (keys == `KEY_FLIP);
 
 always @(*)
 begin
@@ -46,7 +51,7 @@ begin
 
 	// First rotate left
 	data_low_next = {data_high_lsb, data_low[(X*Y-HIGH_BITS-1):1]};
-	if (key_flip_d && !key_flip)
+	if (key_flip)
 		data_low_next[{cursor_y, cursor_x}] = !data_low_next[{cursor_y, cursor_x}];
 end
 

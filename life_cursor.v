@@ -18,6 +18,9 @@
 // Additional Comments: 
 //
 //////////////////////////////////////////////////////////////////////////////////
+
+`include "key_codes.vh"
+
 module life_cursor #
 (
 	parameter X=3'd8,
@@ -27,18 +30,24 @@ module life_cursor #
 ) (
 	input clk,
 	input reset,
-	input key_down, key_up, key_left, key_right,
+	input [2:0]keys,
 	output reg [LOG2Y-1:0]cursor_y,
 	output reg [LOG2X-1:0]cursor_x
 );
 
+wire key_down, key_up, key_left, key_right;
 reg key_down_d, key_up_d, key_left_d, key_right_d;
+
+assign key_down  = (keys == `KEY_DOWN);
+assign key_up    = (keys == `KEY_UP);
+assign key_left  = (keys == `KEY_LEFT);
+assign key_right = (keys == `KEY_RIGHT);
 
 always @(posedge clk)
 begin
 	key_down_d  <= key_down;
 	key_up_d    <= key_up;
-	key_left_d  <= key_right;
+	key_left_d  <= key_left;
 	key_right_d <= key_right;
 end
 	

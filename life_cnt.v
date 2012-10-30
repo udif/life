@@ -18,6 +18,9 @@
 // Additional Comments: 
 //
 //////////////////////////////////////////////////////////////////////////////////
+
+`include "key_codes.vh"
+
 module life_cnt #
 (
 	parameter X=3'd8,
@@ -27,21 +30,16 @@ module life_cnt #
 ) (
 	input clk,
 	input reset,
-	input key_nxt,
+	input [2:0]keys,
 	output reg nxt_bit,
 	output reg [(LOG2X+LOG2Y-1):0]cnt
 );
 
-reg key_nxt_d;
 reg nxt;
 wire last_cnt;
+wire key_nxt = (keys == `KEY_NXT);
 
 assign last_cnt = (cnt == {{(LOG2X+LOG2Y-1){1'b1}}, 1'b0});
-
-always @(posedge clk)
-begin
-	key_nxt_d <= key_nxt;
-end
 
 always @(posedge clk, negedge reset)
 begin
@@ -56,7 +54,7 @@ begin
 		if (last_cnt)
 			nxt_bit <= nxt;
 		// key is being released
-		if (!key_nxt && key_nxt_d)
+		if (key_nxt)
 			nxt <= 1'b1;
 		else if (last_cnt)
 			nxt <= 1'b0;

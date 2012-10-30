@@ -18,6 +18,9 @@
 // Additional Comments: 
 //
 //////////////////////////////////////////////////////////////////////////////////
+
+`include "key_codes.vh"
+
 module life_1 #
 (
 	parameter X=8,
@@ -28,8 +31,7 @@ module life_1 #
 ) (
 	input clk,
 	input reset,
-	input key_flip, key_nxt,
-	input key_flip_d,
+	input [2:0]keys,
 	output [(LOG2X+LOG2Y-1):0]cnt,
 	input [LOG2X-1:0]cursor_x,
 	input [LOG2Y-1:0]cursor_y,
@@ -53,8 +55,7 @@ life_data_low  #(
 ) l_data_l (
 	.clk(clk),
 	.reset(reset),
-	.key_flip(key_flip),
-	.key_flip_d(key_flip_d),
+	.keys(keys),
 	.cursor_x(cursor_x),
 	.cursor_y(cursor_y),
 	.data_low(data_low),
@@ -69,7 +70,7 @@ life_cnt  #(
 ) l_cnt (
 	.clk(clk),
 	.reset(reset),
-	.key_nxt(key_nxt),
+	.keys(keys),
 	.nxt_bit(nxt_bit),
 	.cnt(cnt)
 );

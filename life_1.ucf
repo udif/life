@@ -21,8 +21,9 @@ NET "data_low_lsb"  LOC = "P6"  ;
 NET "data_low_X_XM2<0>"  LOC = "P5"  ; 
 NET "data_low_X_XM2<1>"  LOC = "P3"  ; 
 NET "data_low_X_XM2<2>"  LOC = "P2"  ; 
-NET "key_flip"  LOC = "P13"  ;
-NET "key_flip_d"  LOC = "P14"  ;
+NET "keys<0>"  LOC = "P13"  ;
+NET "keys<1>"  LOC = "P14"  ;
+NET "keys<2>"  LOC = "P16"  ;
 NET "nxt_bit"  LOC = "P12"  ; 
 NET "reset"  LOC = "P33"  ; 
 
