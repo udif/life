@@ -60,7 +60,7 @@ life_data_high  #(
 	.clk(clk),
 	.reset(reset),
 	.nxt_bit(nxt_bit),
-	.keys(keys),
+	.cell_flip(cell_flip),
 	.pipe_out(pipe_out),
 	.cursor_x(cursor_x),
 	.cursor_y(cursor_y),
@@ -77,6 +77,8 @@ life_cursor  #(
 	.clk(clk),
 	.reset(reset),
 	.keys(keys),
+	.cnt(cnt),
+	.cell_flip(cell_flip),
 	.cursor_x(cursor_x),
 	.cursor_y(cursor_y)
 );

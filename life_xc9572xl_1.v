@@ -55,7 +55,7 @@ life_data_low  #(
 ) l_data_l (
 	.clk(clk),
 	.reset(reset),
-	.keys(keys),
+	.cell_flip(cell_flip),
 	.cursor_x(cursor_x),
 	.cursor_y(cursor_y),
 	.data_low(data_low),
@@ -71,6 +71,7 @@ life_cnt  #(
 	.clk(clk),
 	.reset(reset),
 	.keys(keys),
+	.cell_flip(cell_flip),
 	.nxt_bit(nxt_bit),
 	.cnt(cnt)
 );

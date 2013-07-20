@@ -19,8 +19,6 @@
 //
 //////////////////////////////////////////////////////////////////////////////////
 
-`include "key_codes.vh"
-
 module life_data_high #
 (
 	parameter X=8,
@@ -32,7 +30,7 @@ module life_data_high #
 	input clk,
 	input reset,
 	input nxt_bit,
-	input [2:0]keys,
+	input cell_flip,
 	input [LOG2X-1:0]cursor_x,
 	input [LOG2Y-1:0]cursor_y,
 	input pipe_out,
@@ -41,10 +39,6 @@ module life_data_high #
 );
 
 reg [(X*Y-1):(X*Y-HIGH_BITS)]data_high_next;
-reg key_flip_d;
-wire key_flip;
-
-assign key_flip = (keys == `KEY_FLIP);
 
 always @(*)
 begin
@@ -59,13 +53,8 @@ begin
 		// update
 		data_high_next[(Y-1)*X-3] = pipe_out;
 	end
-	else if (key_flip_d && !key_flip)
+	if (cell_flip)
 		data_high_next[{cursor_y, cursor_x}] = !data_high_next[{cursor_y, cursor_x}];
-end
-
-always @(posedge clk)
-begin
-	key_flip_d  <= key_flip;
 end
 
 always @(posedge clk, negedge reset)

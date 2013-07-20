@@ -19,13 +19,16 @@
 //
 //////////////////////////////////////////////////////////////////////////////////
 module cap_touch(
-	input clk, reset,
+	input clk_in, reset,
 	input key_up,
 	input key_down,
 	input key_left,
 	input key_right,
+	input key_flip,
+	input key_nxt,
 	output reg [2:0]keys,
-	output reg clk_1, clk_2
+	output lfsr_done, lfsr2_done,
+	output reg clk
 );
 
 
@@ -51,64 +54,73 @@ module cap_touch(
 
 reg [9:0]lfsr;
 reg [6:0]lfsr2;
-
-wire phase_1 = (lfsr == 10'hbe);
-wire phase_2 = (lfsr == 10'h2d);
-wire phase_3 = (lfsr == 10'h200);
+reg [2:0]keys_static;
+reg [2:0]keys_static_d;
 
 wire lfsr_0_next = lfsr[9] ~^ lfsr[6];
-always @(posedge clk)
+wire lfsr2_0_next = lfsr2[6] ~^ lfsr2[5];
+
+assign lfsr_done  = (lfsr  == 10'h200);
+assign lfsr2_done = (lfsr2 == 7'h40);
+
+always @(posedge clk_in)
 begin
-	if (reset)
+	//
+	// Main prescaler - divide by 1023
+	//
+	if (~reset)
 		lfsr <= 10'd0;
-	else if (!key_up && !key_down && !key_left)
+	else if (lfsr_done)
 		lfsr <= 10'd0;
-	else if (!phase_3)
-	begin
+	else
 		lfsr <= {lfsr[8:0], lfsr_0_next};
-	end
-	keys <= reset ? 3'd0 :
-	        (((keys == `KEY_UP)    & ~phase_3) | key_up)    ? `KEY_UP    :
-	        (((keys == `KEY_DOWN)  & ~phase_3) | key_down)  ? `KEY_DOWN  :
-	        (((keys == `KEY_LEFT)  & ~phase_3) | key_left)  ? `KEY_LEFT  :
-	        (((keys == `KEY_RIGHT) & ~phase_3) | key_right) ? `KEY_RIGHT : 3'd0;
 
-	if (reset)
-	begin
-		clk_1 <= 1'b0;
-		clk_2 <= 1'b0;
-	end
-	else if (phase_1)
-	begin
-		clk_1 <= 1'b1;
-		clk_2 <= 1'b0;
-	end
-	else if (phase_2)
-	begin
-		clk_1 <= 1'b0;
-		clk_2 <= 1'b1;
-	end
-	else if (phase_3)
-	begin
-		clk_1 <= 1'b0;
-		clk_2 <= 1'b0   ;
-	end
-end
+	//
+	// clock output
+	//
+	if (~reset)
+		clk <= 1'b0;
+	else if (lfsr_done)
+		clk <= ~clk;
 
-wire lfsr2_done = (lfsr == 10'h200);
-wire lfsr2_0_next = lfsr[9] ~^ lfsr[6];
-always @(posedge clk)
-begin
-	if (reset)
-	begin
+	//
+	// 2nd prescaler for debounce delay
+	//
+	if (~reset)
 		lfsr2 <= 7'd0;
-	end
-	else if (!key_up && !key_down && !key_left)
+//	else if (!key_up && !key_down && !key_left && !key_right && !key_flip && !key_nxt)
+	else if (keys == `KEY_IDLE)
 		lfsr2 <= 7'd0;
-	else if (!lfsr2_done)
-	begin
-		lfsr2 <= {lfsr2[8:0], lfsr_0_next};
-	end
+	else if (lfsr2_done)
+		lfsr2 <= 7'd0;
+	// Increment when 1st prescaler wraps around
+	else if (lfsr_done)
+		lfsr2 <= {lfsr2[5:0], lfsr2_0_next};
+	//
+	// Debounce logic:
+	//
+	// Set when key pulse received
+	// Cleared when lfsr2 is done
+	// Holds otherwise
+	//
+	keys_static <=
+		~reset ? `KEY_IDLE :
+		(((keys == `KEY_UP)    & ~lfsr2_done) | ~key_up)    ? `KEY_UP    :
+		(((keys == `KEY_DOWN)  & ~lfsr2_done) | ~key_down)  ? `KEY_DOWN  :
+		(((keys == `KEY_LEFT)  & ~lfsr2_done) | ~key_left)  ? `KEY_LEFT  :
+		(((keys == `KEY_RIGHT) & ~lfsr2_done) | ~key_right) ? `KEY_RIGHT :
+		(((keys == `KEY_FLIP)  & ~lfsr2_done) | ~key_flip)  ? `KEY_FLIP  :
+		(((keys == `KEY_NXT)   & ~lfsr2_done) | ~key_nxt)   ? `KEY_NXT   : 3'd0;
+	keys_static_d <= (lfsr_done && clk) ? keys_static : keys_static_d;
+
+	// generate key event for a single clk cycle, update on falling edge
+	keys <=
+		~reset ? `KEY_IDLE :
+		// Change only on falling edge of external clock
+		(!(lfsr_done && clk)) ? keys :
+		// if keys change from idle to non-idle, use them, otherwise go to idle
+		((keys_static_d == `KEY_IDLE) && (keys_static != `KEY_IDLE)) ? keys_static : `KEY_IDLE;
+		
 end
 
 endmodule

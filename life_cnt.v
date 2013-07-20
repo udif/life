@@ -32,12 +32,15 @@ module life_cnt #
 	input reset,
 	input [2:0]keys,
 	output reg nxt_bit,
+	output reg cell_flip,
 	output reg [(LOG2X+LOG2Y-1):0]cnt
 );
 
 reg nxt;
+reg flip_detect;
 wire last_cnt;
-wire key_nxt = (keys == `KEY_NXT);
+wire key_nxt  = (keys == `KEY_NXT);
+wire key_flip = (keys == `KEY_FLIP);
 
 assign last_cnt = (cnt == {{(LOG2X+LOG2Y-1){1'b1}}, 1'b0});
 
@@ -60,6 +63,16 @@ begin
 			nxt <= 1'b0;
 
 		cnt <= cnt + 1;
+		
+		// since the array is constantly moving, we will change cells only
+		// when cnt is 0. this means we need to save the key_flip event until then
+		if (cnt != {(LOG2X+LOG2Y){1'b1}})
+			flip_detect <= flip_detect | key_flip;
+		else
+			flip_detect <= key_flip;
+
+		cell_flip <= (flip_detect && (cnt == {(LOG2X+LOG2Y){1'b1}}));
+
 	end
 end
 
