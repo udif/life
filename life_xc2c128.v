@@ -18,6 +18,9 @@
 // Additional Comments: 
 //
 //////////////////////////////////////////////////////////////////////////////////
+
+`include "key_codes.vh"
+
 module life #
 (
 	parameter X=8,
@@ -28,8 +31,7 @@ module life #
 ) (
 	input clk,
 	input reset,
-	input key_nxt,
-	input key_flip, key_down, key_up, key_left, key_right,
+        input [2:0]keys,
 	output [X-1:0]row,
 	output [Y-1:0]col
  );
@@ -52,8 +54,7 @@ life_data_low  #(
 ) l_data_l (
 	.clk(clk),
 	.reset(reset),
-	.key_flip(key_flip),
-	.key_flip_d(key_flip_d),
+	.cell_flip(cell_flip),
 	.cursor_x(cursor_x),
 	.cursor_y(cursor_y),
 	.data_low(data[(X*Y-HIGH_BITS-1):0]),
@@ -70,8 +71,7 @@ life_data_high  #(
 	.clk(clk),
 	.reset(reset),
 	.nxt_bit(nxt_bit),
-	.key_flip(key_flip),
-	.key_flip_d(key_flip_d),
+	.cell_flip(cell_flip),
 	.pipe_out(pipe_out),
 	.cursor_x(cursor_x),
 	.cursor_y(cursor_y),
@@ -87,10 +87,7 @@ life_cursor  #(
 ) l_cursor (
 	.clk(clk),
 	.reset(reset),
-	.key_down(key_down),
-	.key_up(key_up),
-	.key_left(key_left),
-	.key_right(key_right),
+	.keys(keys),
 	.cursor_x(cursor_x),
 	.cursor_y(cursor_y)
 );
@@ -103,7 +100,7 @@ life_cnt  #(
 ) l_cnt (
 	.clk(clk),
 	.reset(reset),
-	.key_nxt(key_nxt),
+	.keys(keys),
 	.nxt_bit(nxt_bit),
 	.cnt(cnt)
 );

@@ -44,12 +44,7 @@ life  #(
 ) l (
 	.clk(clk),
 	.reset(reset),
-	.key_nxt(key_nxt),
-	.key_flip(key_flip),
-	.key_down(key_down),
-	.key_up(key_up),
-	.key_left(key_left),
-	.key_right(key_right),
+	.keys(keys),
 	.row(row),
 	.col(col)
 );
