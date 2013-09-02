@@ -27,13 +27,29 @@ parameter LOG2Y=4;
 
 
 
-reg clk, reset;
+reg clk_in, reset;
+wire clk;
 reg key_nxt, key_flip, key_down, key_up, key_left, key_right;
+wire [2:0]keys;
 wire [X-1:0]row;
 wire [Y-1:0]col;
 integer i, j, g;
 
 reg [(X*Y-1):0]disp_array;
+cap_touch cap (
+	.clk_in(clk_in),
+	.reset(reset),
+	.key_up(key_up),
+	.key_down(key_down),
+	.key_left(key_left),
+	.key_right(key_right),
+	.key_flip(key_flip),
+	.key_nxt(key_nxt),
+	.keys(keys),
+	.lfsr_done(),
+	.lfsr2_done(),
+	.clk(clk)
+);
 
 life  #(
   .X(X),
@@ -51,13 +67,13 @@ life  #(
 
 initial
 begin
-	clk <= 1'b0;
+	clk_in <= 1'b0;
 	reset <= 1'b0;
 	#15 reset <= 1'b1;
 end
 
 always
-	#10 clk <= ~clk;
+	#10 clk_in <= ~clk_in;
 
 initial
 begin
