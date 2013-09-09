@@ -69,7 +69,7 @@ initial
 begin
 	clk_in <= 1'b0;
 	reset <= 1'b0;
-	#15 reset <= 1'b1;
+	#15000 reset <= 1'b1;
 end
 
 always
@@ -109,12 +109,12 @@ begin
 	$dumpfile("life.lxt");
 	$dumpvars(0, top);
 	$dumpon;
-	key_left = 1'b0;
-	key_right = 1'b0;
-	key_down = 1'b0;
-	key_up = 1'b0;
-	key_flip = 1'b0;
-	key_nxt = 1'b0;
+	key_left = 1'b1;
+	key_right = 1'b1;
+	key_down = 1'b1;
+	key_up = 1'b1;
+	key_flip = 1'b1;
+	key_nxt = 1'b1;
 	repeat(X*Y)
 		@(posedge clk);
 	for (g = 0; g < 15; g = g + 1)

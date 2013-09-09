@@ -111,7 +111,7 @@ begin
 		(((keys == `KEY_RIGHT) & ~lfsr2_done) | ~key_right) ? `KEY_RIGHT :
 		(((keys == `KEY_FLIP)  & ~lfsr2_done) | ~key_flip)  ? `KEY_FLIP  :
 		(((keys == `KEY_NXT)   & ~lfsr2_done) | ~key_nxt)   ? `KEY_NXT   : 3'd0;
-	keys_static_d <= (lfsr_done && clk) ? keys_static : keys_static_d;
+	keys_static_d <= ~reset ? `KEY_IDLE : (lfsr_done && clk) ? keys_static : keys_static_d;
 
 	// generate key event for a single clk cycle, update on falling edge
 	keys <=
